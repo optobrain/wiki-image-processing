@@ -44,13 +44,11 @@ function highest_freq=img_spatio_freq(image)
     freqs=wid_mat.*len_mat;
     figure(2);
     plot(freqs,spatio_freq);
-
-    max_mag=max(spatio_freq);
+    % find the most common frequency domain
+    max_mag=max(spatio_freq,[],'all');
     [x,y]=find(spatio_freq==max_mag);
     highest_freq=freqs(x,y);
 
-    % return the frequency with the highest magnitude of fourier
-    % coefficient
 
 
 
