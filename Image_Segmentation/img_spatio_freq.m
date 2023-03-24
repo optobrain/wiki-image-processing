@@ -7,7 +7,7 @@
 % Function Arguments:
 % image: tested image (data size: (width image, length image, channel image)
 
-function spatio_freq=img_spatio_freq(image)
+function highest_freq=img_spatio_freq(image)
     % check out if the input is empty
     % insert input parser for organizing the required and optional input
     p=inputParser;
@@ -31,7 +31,27 @@ function spatio_freq=img_spatio_freq(image)
     % conduct fourier transform on image
     spatio_freq=fft2(image);
     spatio_freq=fftshift(spatio_freq);
-    spatio_freq=abs(spatio_freq);
+    
+    % show the image frequency plot
+    figure(1);
+    imagesc(abs(spatio_freq))
+
+    % plot the power spectral density plot
+    spatio_freq=abs(spatio_freq).^2/(wid_img*len_img);
+    wid_rang=(1:wid_img);
+    len_rang=(1:len_img);
+    [wid_mat, len_mat]=ndgrid(wid_rang,len_rang);
+    freqs=wid_mat.*len_mat;
+    figure(2);
+    plot(freqs,spatio_freq);
+
+    max_mag=max(spatio_freq);
+    [x,y]=find(spatio_freq==max_mag);
+    highest_freq=freqs(x,y);
+
+    % return the frequency with the highest magnitude of fourier
+    % coefficient
+
 
 
 end
