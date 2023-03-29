@@ -7,7 +7,7 @@
 % Function Arguments:
 % image: tested image (data size: (width image, length image, channel image)
 
-function highest_freq=img_spatio_freq(image)
+function common_freq=img_spatio_freq(image)
     % check out if the input is empty
     % insert input parser for organizing the required and optional input
     p=inputParser;
@@ -47,7 +47,7 @@ function highest_freq=img_spatio_freq(image)
     % find the most common frequency domain
     max_mag=max(spatio_freq,[],'all');
     [x,y]=find(spatio_freq==max_mag);
-    highest_freq=freqs(x,y);
+    common_freq=freqs(x,y);
 
 
 
