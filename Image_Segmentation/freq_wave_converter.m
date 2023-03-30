@@ -16,6 +16,6 @@ function wavelength=freq_wave_converter(freq)
     freq=p.Results.freq;
 
     % conduct frequency to wavelength conversion
-    wavelength=1/freq;
+    wavelength=1./freq;
     
 end

@@ -34,21 +34,32 @@ function common_freq=img_spatio_freq(image)
     
     % show the image frequency plot
     figure(1);
+    title("Fourier Transform Plot")
     imagesc(abs(spatio_freq))
 
     % plot the power spectral density plot
-    spatio_freq=abs(spatio_freq).^2/(wid_img*len_img);
+    spatio_freq_mag=abs(spatio_freq).^2/(wid_img*len_img);
     wid_rang=(1:wid_img);
     len_rang=(1:len_img);
     [wid_mat, len_mat]=ndgrid(wid_rang,len_rang);
     freqs=wid_mat.*len_mat;
     figure(2);
-    plot(freqs,spatio_freq);
+    title("Power Spectral Density Plot")
+    plot(freqs,spatio_freq_mag);
     % find the most common frequency domain
-    max_mag=max(spatio_freq,[],'all');
-    [x,y]=find(spatio_freq==max_mag);
-    common_freq=freqs(x,y);
+    max_mag=max(spatio_freq_mag,[],'all');
+    [x,y]=find(spatio_freq_mag==max_mag);
 
+    % filter out only one frequency 
+    % in the original output, there are two frequencies (one is the
+    % original signal and the other is its complex conjugate). Only one is
+    % needed.
+    freq_x=x(1)/wid_img;
+    freq_y=y(1)/len_img;
+    % compute the frequency in x and y direction
+    freq_x=2*pi/freq_x;
+    freq_y=2*pi/freq_y;
+    common_freq=[freq_x freq_y];
 
 
 
