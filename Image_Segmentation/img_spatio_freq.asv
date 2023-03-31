@@ -7,7 +7,7 @@
 % Function Arguments:
 % image: tested image (data size: (width image, length image, channel image)
 
-function [common_freq, maximum_freq, minimum_freq]=img_spatio_freq(image)
+function [common_freq maximum_freq minimum_freq]=img_spatio_freq(image)
     % check out if the input is empty
     % insert input parser for organizing the required and optional input
     p=inputParser;
