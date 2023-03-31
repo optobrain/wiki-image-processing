@@ -61,14 +61,10 @@ function common_freq=img_spatio_freq(image)
 
     % check if the final frequency is larger than the base frequency: 2*pi/wid_img (need more clarification)
     thres_x=2*pi/wid_img;
-    if freq_x<=thres_x
+    if freq_x>=thres_x
         freq_x=0;
     end
-    % check if the final frequency is larger than the base frequency: 2*pi/len_img (need more clarification)
-    thres_y=2*pi/len_img;
-    if freq_y<=thres_y
-        freq_y=0;
-    end
+    % check if the final frequency is larger than the base frequency: 2*pi/wid_img (need more clarification)
 
     common_freq=[freq_x freq_y];
 
