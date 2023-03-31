@@ -69,8 +69,8 @@ function [common_freq, maximum_freq, minimum_freq]=img_spatio_freq(image)
 
     % find the minimum frequency
     [min_x,min_y]=find(spatio_freq,1,'first');
-    min_freq_x=(min_x(1)-1)/len_img;
-    min_freq_y=(min_y(1)-1)/wid_img;
+    min_freq_x=(min_x(1)-1)/w_img;
+    min_freq_y=(min_y(1)-1)/len_img;
     % compute the frequency in x and y direction
     min_freq_x=2*pi*min_freq_x;
     min_freq_y=2*pi*min_freq_y;

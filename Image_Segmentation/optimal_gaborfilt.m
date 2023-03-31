@@ -24,9 +24,9 @@ function [mag_gabor,phase_gabor]=optimal_gaborfilt(image,factor_wav,factor_angle
     % retrieve necessary parameters for gabor filters
     % retrieve the wavelengths of the gabor filters
     [common_freq,max_freq,min_freq]=img_spatio_freq(image); % retreive the spatial frequency of the image
-    common_wavelength=freq_wave_converter(common_freq); % convert the most common frequency to wavelength
-    max_freq_wavelength=freq_wave_converter(max_freq); % convert the maximum frequency to wavelength
-    min_freq_wavelength=freq_wave_converter(min_freq); % convert the minimum frequency to wavelength
+    common_wavelength=freq_wave_converter(image,common_freq); % convert the most common frequency to wavelength
+    max_freq_wavelength=freq_wave_converter(image,max_freq); % convert the maximum frequency to wavelength
+    min_freq_wavelength=freq_wave_converter(image,min_freq); % convert the minimum frequency to wavelength
     common_wavelength=sqrt(common_wavelength(1)^2 + ...
                            common_wavelength(2)^2);
     max_freq_wavelength=sqrt(max_freq_wavelength(1)^2 + ...
