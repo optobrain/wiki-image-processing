@@ -46,7 +46,6 @@ function [common_freq, maximum_freq, minimum_freq]=img_spatio_freq(image)
     title("Power Spectral Density Plot")
     plot(freqs,spatio_freq_mag);
 
-        spatio_freq_mag=abs(spatio_freq).^2/(wid_img*len_img);
     % find the most common frequency
     max_mag=max(spatio_freq_mag,[],'all');
     [com_x,com_y]=find(spatio_freq_mag==max_mag);
