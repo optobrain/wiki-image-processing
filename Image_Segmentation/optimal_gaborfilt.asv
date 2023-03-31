@@ -24,8 +24,6 @@ function [mag_gabor,phase_gabor]=optimal_gaborfilt(image,factor_wav,factor_angle
     % retrieve the wavelengths of the gabor filters
     spatio_freq=img_spatio_freq(image); % retreive the spatial frequency of the image
     wavelength=freq_wave_converter(spatio_freq); % convert the spatial frequency to wavelength
-    % computing the optimal wavelength for gabor filters
- 
 
 
 end
