@@ -46,6 +46,7 @@ function [common_freq, maximum_freq, minimum_freq]=img_spatio_freq(image)
     title("Power Spectral Density Plot")
     plot(freqs,spatio_freq_mag);
 
+        spatio_freq_mag=abs(spatio_freq).^2/(wid_img*len_img);
     % find the most common frequency
     max_mag=max(spatio_freq_mag,[],'all');
     [com_x,com_y]=find(spatio_freq_mag==max_mag);
@@ -53,24 +54,24 @@ function [common_freq, maximum_freq, minimum_freq]=img_spatio_freq(image)
     % in the original output, there are two frequencies (one is the
     % original signal and the other is its complex conjugate). Only one is
     % needed.
-    com_freq_x=com_x(1)/wid_img;
-    com_freq_y=com_y(1)/len_img;
+    com_freq_x=(com_x(1)-1)/wid_img;
+    com_freq_y=(com_y(1)-1)/len_img;
     % compute the frequency in x and y direction
     com_freq_x=2*pi*com_freq_x;
     com_freq_y=2*pi*com_freq_y;
 
     % find the maximum frequency
-    [max_x,max_y]=find(spatio_freq,'last');
-    max_freq_x=max_x(1)/wid_img;
-    max_freq_y=max_y(1)/len_img;
+    [max_x,max_y]=find(spatio_freq,1,'last');
+    max_freq_x=(max_x(1)-1)/wid_img;
+    max_freq_y=(max_y(1)-1)/len_img;
     % compute the frequency in x and y direction
     max_freq_x=2*pi*max_freq_x;
     max_freq_y=2*pi*max_freq_y;
 
     % find the minimum frequency
-    [min_x,min_y]=find(spatio_freq,'first');
-    min_freq_x=min_x(1)/wid_img;
-    min_freq_y=min_y(1)/len_img;
+    [min_x,min_y]=find(spatio_freq,1,'first');
+    min_freq_x=(min_x(1)-1)/wid_img;
+    min_freq_y=(min_y(1)-1)/len_img;
     % compute the frequency in x and y direction
     min_freq_x=2*pi*min_freq_x;
     min_freq_y=2*pi*min_freq_y;
@@ -85,7 +86,6 @@ function [common_freq, maximum_freq, minimum_freq]=img_spatio_freq(image)
     if com_freq_y<=thres_y
         com_freq_y=0;
     end
-
     % check if the final frequency is larger than the base frequency: 2*pi/wid_img (need more clarification)
     if max_freq_x<=thres_x
         max_freq_x=0;
