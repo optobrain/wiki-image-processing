@@ -79,9 +79,8 @@ function [common_freq, maximum_freq, minimum_freq]=img_spatio_freq(image)
     len_mat=len_mat-1; % subtract every element in vertical direction by 1
     len_mat=len_mat/wid_img; % divide every element in vertical direction by the width of the image
     % centralize the frequency scale
-    wid_mat=wid_mat-0.5;
-    len_mat=len_mat-0.5;
-    % calculate the overall frequency
+    
+
     freqs_x=2*pi*wid_mat;
     freqs_y=2*pi*len_mat;
     freqs=sqrt(freqs_x.^2+freqs_y.^2);
