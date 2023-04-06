@@ -41,7 +41,10 @@ function [common_freq, maximum_freq, minimum_freq]=img_spatio_freq(image)
     wid_rang=(1:wid_img);
     len_rang=(1:len_img);
     [wid_mat, len_mat]=ndgrid(wid_rang,len_rang);
-    freqs=wid_mat.*len_mat;
+    freqs_x=2*pi*(wid_mat-1)/len_img;
+    freqs_y=2*pi*(len_mat-1)/wid_img;
+    freqs=sqrt(freqs_x.^2+freqs_y.^2);
+%     freqs=
     figure(2);
     title("Power Spectral Density Plot")
     plot(freqs,spatio_freq_mag);
