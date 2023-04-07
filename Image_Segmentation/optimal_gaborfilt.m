@@ -26,7 +26,9 @@ function [mag_gabor,phase_gabor]=optimal_gaborfilt(image,factor_wav,factor_angle
     % wavelength computation
     % retrieve necessary parameters for gabor filters
     % retrieve the wavelengths of the gabor filters
-    [common_freq,common_ang,max_freq,min_freq]=img_spatio_freq(image); % retreive the spatial frequency of the image
+    [common_freq,common_ang,...
+     max_freq,max_freq_ang,...
+     min_freq,min_freq_ang]=img_spatio_freq(image); % retreive the spatial frequency of the image
     common_wavelength=freq_wave_converter(image,common_freq); % convert the most common frequency to wavelength
     max_freq_wavelength=freq_wave_converter(image,max_freq); % convert the maximum frequency to wavelength
     min_freq_wavelength=freq_wave_converter(image,min_freq); % convert the minimum frequency to wavelength
@@ -41,7 +43,7 @@ function [mag_gabor,phase_gabor]=optimal_gaborfilt(image,factor_wav,factor_angle
 
     % angle computation
     % divide the angle from 0 to 180 into several grids
-    optimala_angs=optimal_ang_gen(common_ang,factor_angle);
+    optimal_angs=optimal_ang_gen(common_ang,max_freq_ang,min_freq_ang,factor_angle);
 
     % conduct gabor filtering
     if size(image,3)~= 1
@@ -50,7 +52,7 @@ function [mag_gabor,phase_gabor]=optimal_gaborfilt(image,factor_wav,factor_angle
         gray_img=image;
     end
     % create gabor filters
-    g = gabor(grid_wavelengths,grid_angles);
+    g = gabor(optimal_waves,optimal_angs);
     [mag_gabor,phase_gabor]=imgaborfilt(gray_img,g);
     montage(mag_gabor,"size",[4 6])
 

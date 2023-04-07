@@ -7,7 +7,9 @@
 % Function Arguments:
 % image: tested image (data size: (width image, length image, channel image)
 
-function [common_freq, common_ang, maximum_freq, minimum_freq]=img_spatio_freq(image)
+function [common_freq, common_ang, ...
+          maximum_freq, maximum_freq_ang,...
+          minimum_freq, minimum_freq_ang]=img_spatio_freq(image)
     % check out if the input is empty
     % insert input parser for organizing the required and optional input
     p=inputParser;
@@ -94,6 +96,10 @@ function [common_freq, common_ang, maximum_freq, minimum_freq]=img_spatio_freq(i
     max_freq_y=(max_y(1)-1)/wid_img;
     max_freq_x=max_freq_x-0.5;
     max_freq_y=max_freq_y-0.5;
+    % calculate the angle for the maximum frequency
+    re_comp=real(spatio_freq(max_x(1),max_y(1)));
+    im_comp=imag(spatio_freq(max_x(1),max_y(1)));
+    max_ang=atan(im_comp/re_comp);
     % compute the frequency in x and y direction
     max_freq_x=2*pi*max_freq_x;
     max_freq_y=2*pi*max_freq_y;
@@ -104,6 +110,10 @@ function [common_freq, common_ang, maximum_freq, minimum_freq]=img_spatio_freq(i
     min_freq_y=(min_y(1)-1)/wid_img;
     min_freq_x=min_freq_x-0.5;
     min_freq_y=min_freq_y-0.5;
+    % calculate the angle for the maximum frequency
+    re_comp=real(spatio_freq(min_x(1),min_y(1)));
+    im_comp=imag(spatio_freq(min_x(1),min_y(1)));
+    min_ang=atan(im_comp/re_comp);
     % compute the frequency in x and y direction
     min_freq_x=2*pi*min_freq_x;
     min_freq_y=2*pi*min_freq_y;
@@ -140,8 +150,10 @@ function [common_freq, common_ang, maximum_freq, minimum_freq]=img_spatio_freq(i
     common_freq=[com_freq_x com_freq_y];
     common_ang=com_ang;
     maximum_freq=[max_freq_x max_freq_y];
+    maximum_freq_ang=max_ang;
     minimum_freq=[min_freq_x min_freq_y];
-    
+    minimum_freq_ang=min_ang;
+
 
 
 end
