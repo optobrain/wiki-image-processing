@@ -7,7 +7,7 @@
 % Function Arguments:
 % image: tested image (data size: (width image, length image, channel image)
 
-function [common_freq, maximum_freq, minimum_freq]=img_spatio_freq(image)
+function [common_freq, common_ang, maximum_freq, minimum_freq]=img_spatio_freq(image)
     % check out if the input is empty
     % insert input parser for organizing the required and optional input
     p=inputParser;
@@ -37,40 +37,8 @@ function [common_freq, maximum_freq, minimum_freq]=img_spatio_freq(image)
     title("Fourier Transform Plot")
     imagesc(abs(spatio_freq))
 
-    % plot the power spectral density plot
-    spatio_freq_mag=abs(spatio_freq).^2/(wid_img*len_img);
-    % find the most common frequency
-    max_mag=max(spatio_freq_mag,[],'all');
-    [com_x,com_y]=find(spatio_freq_mag==max_mag);
-    % filter out only one frequency 
-    % in the original output, there are two frequencies (one is the
-    % original signal and the other is its complex conjugate). Only one is
-    % needed.
-    com_freq_x=abs(com_x(1)-com_x(2))/2;
-    com_freq_x=com_freq_x/wid_img;
-    com_freq_y=abs(com_y(1)-com_y(2))/2;
-    com_freq_y=com_freq_y/len_img;
-    % compute the frequency in x and y direction
-    com_freq_x=2*pi*com_freq_x;
-    com_freq_y=2*pi*com_freq_y;
-
-    % find the maximum frequency
-    [max_x,max_y]=find(spatio_freq,1,'last');
-    max_freq_x=(max_x(1)-1)/wid_img;
-    max_freq_y=(max_y(1)-1)/len_img;
-    % compute the frequency in x and y direction
-    max_freq_x=2*pi*max_freq_x;
-    max_freq_y=2*pi*max_freq_y;
-
-    % find the minimum frequency
-    [min_x,min_y]=find(spatio_freq,1,'first');
-    min_freq_x=(min_x(1)-1)/len_img;
-    min_freq_y=(min_y(1)-1)/wid_img;
-    % compute the frequency in x and y direction
-    min_freq_x=2*pi*min_freq_x;
-    min_freq_y=2*pi*min_freq_y;
-
     % plot the power spectral density
+    spatio_freq_mag=abs(spatio_freq).^2/(wid_img*len_img);
     wid_rang=(1:wid_img);
     len_rang=(1:len_img);
     [wid_mat, len_mat]=ndgrid(wid_rang,len_rang);
@@ -88,6 +56,46 @@ function [common_freq, maximum_freq, minimum_freq]=img_spatio_freq(image)
     figure(2);
     title("Power Spectral Density Plot")
     plot(freqs,spatio_freq_mag);
+
+    % find the most common frequency
+    max_mag=max(spatio_freq_mag,[],'all');
+    [com_x,com_y]=find(spatio_freq_mag==max_mag);
+    % calculate the most common frequency
+    % The center point will be located in between the middle two most
+    % common frequency.
+    % Therefore, the most common frequency can be calculated as:
+    com_freq_x=abs(flip(com_x(1:end/2))-com_x(end/2+1:end))/2;
+    com_freq_x=com_freq_x/len_img;
+    com_freq_y=abs(flip(com_y(1:end/2))-com_y(end/2+1:end))/2;
+    com_freq_y=com_freq_y/wid_img;
+    % compute the frequency in x and y direction
+    com_freq_x=2*pi*com_freq_x;
+    com_freq_y=2*pi*com_freq_y;
+    % find the most common angle for the frequency
+    re_comp=real(spatio_freq(com_x(end/2+1:end),com_y(end/2+1:end)));
+    im_comp=imag(spatio_freq(com_x(end/2+1:end),com_y(end/2+1:end)));
+    com_ang=atan(im_comp/re_comp);
+
+    % find the maximum frequency
+    [max_x,max_y]=find(spatio_freq_mag,1,'last');
+    max_freq_x=(max_x(1)-1)/len_img;
+    max_freq_y=(max_y(1)-1)/wid_img;
+    max_freq_x=max_freq_x-0.5;
+    max_freq_y=max_freq_y-0.5;
+    % compute the frequency in x and y direction
+    max_freq_x=2*pi*max_freq_x;
+    max_freq_y=2*pi*max_freq_y;
+
+    % find the minimum frequency
+    [min_x,min_y]=find(spatio_freq_mag,1,'first');
+    min_freq_x=(min_x(1)-1)/len_img;
+    min_freq_y=(min_y(1)-1)/wid_img;
+    min_freq_x=min_freq_x-0.5;
+    min_freq_y=min_freq_y-0.5;
+    % compute the frequency in x and y direction
+    min_freq_x=2*pi*min_freq_x;
+    min_freq_y=2*pi*min_freq_y;
+
 
     % check if the final frequency is larger than the base frequency: 2*pi/wid_img (need more clarification)
     thres_x=2*pi/wid_img;
@@ -118,9 +126,10 @@ function [common_freq, maximum_freq, minimum_freq]=img_spatio_freq(image)
 
     % return the frequencies
     common_freq=[com_freq_x com_freq_y];
+    common_ang=com_ang;
     maximum_freq=[max_freq_x max_freq_y];
     minimum_freq=[min_freq_x min_freq_y];
-
+    
 
 
 end
