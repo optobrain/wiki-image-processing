@@ -64,17 +64,29 @@ function [common_freq, common_ang, maximum_freq, minimum_freq]=img_spatio_freq(i
     % The center point will be located in between the middle two most
     % common frequency.
     % Therefore, the most common frequency can be calculated as:
-    com_freq_x=abs(flip(com_x(1:end/2))-com_x(end/2+1:end))/2;
-    com_freq_x=com_freq_x/len_img;
-    com_freq_y=abs(flip(com_y(1:end/2))-com_y(end/2+1:end))/2;
-    com_freq_y=com_freq_y/wid_img;
+    if numel(com_x)>1
+        half_com=ceil(numel(com_x)/2);
+        com_freq_x=abs(flip(com_x(1:half_com))-com_x(half_com+1:end))/2;
+        com_freq_x=com_freq_x/len_img;
+        com_freq_y=abs(flip(com_y(1:half_com))-com_y(half_com+1:end))/2;
+        com_freq_y=com_freq_y/wid_img;
+        % find the most common angle for the frequency    
+        re_comp=real(spatio_freq(com_x(half_com+1:end),com_y(half_com+1:end)));
+        im_comp=imag(spatio_freq(com_x(half_com+1:end),com_y(half_com+1:end)));
+        com_ang=atan(im_comp/re_comp);
+    else
+        com_freq_x=com_x(1)-(len_img/2);
+        com_freq_x=com_freq_x/len_img;
+        com_freq_y=com_y(1)-(wid_img/2);
+        com_freq_y=com_freq_y/wid_img;
+        re_comp=real(spatio_freq(com_x(1),com_y(1)));
+        im_comp=imag(spatio_freq(com_x(1),com_y(1)));
+        com_ang=atan(im_comp/re_comp);
+    end
     % compute the frequency in x and y direction
     com_freq_x=2*pi*com_freq_x;
     com_freq_y=2*pi*com_freq_y;
-    % find the most common angle for the frequency
-    re_comp=real(spatio_freq(com_x(end/2+1:end),com_y(end/2+1:end)));
-    im_comp=imag(spatio_freq(com_x(end/2+1:end),com_y(end/2+1:end)));
-    com_ang=atan(im_comp/re_comp);
+
 
     % find the maximum frequency
     [max_x,max_y]=find(spatio_freq_mag,1,'last');

@@ -1,4 +1,4 @@
-% Created Date: April 7th, 2023
+% Created Date: March 9th, 2023
 % Belong to: Leelab.ai
 % Creator: Kuan-Min Lee
 % Function Instruction:
@@ -6,15 +6,8 @@
 % gabor filter function from MATLAB library
 % Function Arguments:
 % common_wavelength: the most common wavelengths obtain from
-% freq_wave_convert.m function 
-% (data size: single integer or array with size of (num_commonwavelength,1))
-% max_freq_wavelength: the wavelength for maximum frequency obtained from
-% freq_wave_converter.m function (data size: single integer)
-% min_freq_wavelength: the wavelength for minimum frequency obtained from
-% freq_wave_converter.m function (data size: single integer)
-% factor_wav: factor of wavelength obatined from the input from
-% optimal_gaborfilt.m function 
-% (data size: single integer)
+% freq_wave_convert.m function (data size: single integer or array with
+% size 
 
 function optimal_wav=optimal_wav_gen(common_wavelength,max_freq_wavelength,min_freq_wavelength,factor_wav)
     % check out if the input is empty

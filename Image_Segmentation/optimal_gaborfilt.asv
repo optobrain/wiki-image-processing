@@ -7,8 +7,8 @@
 % and gabor function (from MATLAB)
 % Function Arguments:
 % image: test image (data size:(width image, length image, channel image)), 
-% factor_wav: the number of tested wavelengths (data size: one single integer)
-% factor_angle: the number of tested angles (data size: one single integer)
+% factor_wav: the number of tested wavelengths (data size: integer)
+% factor_angle: the number of tested angles
 function [mag_gabor,phase_gabor]=optimal_gaborfilt(image,factor_wav,factor_angle)
     % check out if the input is empty
     % insert input parser for organizing the required and optional input
