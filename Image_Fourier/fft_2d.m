@@ -29,14 +29,14 @@ x = (1:nx)/fs;  % sampling interval of x = 1/fs
 
 % Array of spatial frequency, nu
 %   nu of FFT is from -fs/2 to fs/2 and have the length of nx. This nu array should be
-%   symmetric over nu = 0, but it has an even number of elements. Since nx/2-th element 
-%   corresponds to nu=0 and the last element corresponds to nu=fs/2, the first element 
-%   should corresponds to nu = -fs/2 + delta_nu where delta_nu is the sampling interval 
-%   in nu, which is fs/nx (see the above matlab example).
+%   symmetric over nu = 0, but it has an even number of elements. 
+%   See the example of Shift 1-D Signal in
+%   https://www.mathworks.com/help/matlab/ref/fftshift.html for how to make nu array for
+%   shifted FFT.
 
-
-nu = linspace(-fs/2+fs/nx, fs/2, nx);  % [/m]
+% nu = linspace(-fs/2+fs/nx, fs/2, nx);  % [/m]  % wrong
 % nu = 0:fs/nx:fs/2;  % [/m] : as in the above matlab example. same as the above line.
+nu = (-nx/2:nx/2-1)*(fs/nx);  % from the above fftshift example
 k = 2*pi*nu;  % [rad/m]
 
 % Generate y
@@ -73,7 +73,7 @@ clear;
 
 % Parameters
 
-lamX = 20;  lamY = 30;  % characteristic wavelengths in X and Y [m]
+lamX = 20;  lamY = 50;  % characteristic wavelengths in X and Y [m]
 nx = 200;  ny = 250;  % length of 2D array in X and Y
 
 fs = 1;  % sampling frequency in x and y [m]
@@ -91,8 +91,10 @@ y = (1:ny)/fs;
 % Array of spatial frequency, nu
 %   nu of FFT is from 0 to f/2 and have the length of nx/2+1, where f = sampling frequency.
 
-nux = linspace(-fs/2+fs/nx, fs/2, nx);  % [/m]
-nuy = linspace(-fs/2+fs/ny, fs/2, ny);  % [/m]
+% nux = linspace(-fs/2+fs/nx, fs/2, nx);  % [/m]
+% nuy = linspace(-fs/2+fs/ny, fs/2, ny);  % [/m]
+nux = (-nx/2:nx/2-1)*fs/nx;  % see the fftshift example
+nuy = (-ny/2:ny/2-1)*fs/ny;
 kx = 2*pi*nux;  % [rad/m]
 ky = 2*pi*nuy;
 
