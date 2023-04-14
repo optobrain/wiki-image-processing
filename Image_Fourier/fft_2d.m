@@ -41,7 +41,6 @@ x = (1:nx)/fs;  % sampling interval of x = 1/fs
 %   should corresponds to nu = -fs/2 + delta_nu where delta_nu is the sampling interval 
 %   in nu, which is fs/nx (see the above matlab example).
 
-
 nu = linspace(-fs/2+fs/nx, fs/2, nx);  % [/m]
 % nu = 0:fs/nx:fs/2;  % [/m] : as in the above matlab example. same as the above line.
 k = 2*pi*nu;  % [rad/m]

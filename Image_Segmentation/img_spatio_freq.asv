@@ -37,7 +37,10 @@ function [common_freq, common_ang, ...
     % conduct fast Fourier shift to centralize the component to the center
     % part of the matrix
     spatio_freq=fftshift(fft2(image));
-    
+    % take the area for kx>0 (for fast Fourier transform, we only need half
+    % of the output)
+    spatio_freq = spatio_freq(nx/2:nx,:);  % take the area for kx>0
+
     %% The below part needs modification
     % Obtain the array for space (x and y values in Fourier Transform)
     % x direction
@@ -56,33 +59,45 @@ function [common_freq, common_ang, ...
     fy=linspace(-fs/2+fs/ny,fs/2,ny); % y direction
 
     % Obtain power spectral density information
-    psd=(1/((fs*nx)*(fs*ny)))*abs(spatio_freq).^2;
+    psd=(1/((fs*nx)*(fs*ny)))*abs(spatio_freq)
 
     % Obtain the Fourier Transform Plot
     figure(1);
-    imagesc(abs(spatio_freq));
+    imagesc(abs(spatio_freq))
 
     % Obtain Power Spectral Density Plot
     figure(2);
-    title("2D Power spectral density");
-    imagesc(fx, fy, spatio_freq');
-    [~,im]=max(psd); % find out index of the maximum value
-    line(fx(im(1)), fy(im(2)), marker="o", color='c');  % mark the maximum by "o"
+    title("2D Power spectral density")
+    imagesc(fx, fy, spatio_freq')
     axis image
     ax = gca;
     ax.YDir = "normal";
-    ax.DataAspectRatio = [1 1 1];
-    % x and y axes
-    line(ax.XLim, [0 0], color='w');
-    line([0 0], ax.YLim, color='w');  
-    ax.YLabel.String = "\nu_y [/m]";
-    ax.XLabel.String = ["\nu_x [/m]", ...
-        sprintf("Max at nux=%.3f, kx=%.2f, lamX=%.1f", nux(im(1)), kx(im(1)), 2*pi/kx(im(1))), ...
-        sprintf("and nuy=%.3f, ky=%.2f, lamY=%.1f", nuy(im(2)), ky(im(2)), 2*pi/ky(im(2))), ...
-        sprintf("and ang=%.2f [rad]", atan(ky(im(2))/kx(im(1))))];
-        sgtitle([sprintf("True nux=%.3f, kx=%.2f, lamX=%.1f", nux1, kx1, lamX), ...
-        sprintf("and nuy=%.3f, ky=%.2f, lamY=%.1f", nuy1, ky1, lamY), ...
-        sprintf("and ang=%.2f [rad]", ang1)]);
+    xlabel("k_x")
+    ylabel("k_y")
+
+
+    % Obtain frequency in Fourier Transform domain
+    % x direction
+    x=x-1; % subtract by 1
+    x=x./nx; % divide every 
+    x=x-0.5;
+    y=(1:ny);
+    y=y-1;
+    y=y/nx;
+    y=y-0.5;
+    kx = 2*pi * x;
+    ky = 2*pi * y;
+    kx = kx((nx/2+1):nx);
+
+%     freq = 0:fs/length(x):fs/2;
+    kx = 0:fs/nx:fs/2;  % when you have the sampling freq. fs, the maximum freq you can inspect with FFT is fs/2.
+    kx = -fs/2:fs/nx:fs/2;
+    kx = kx(2:end);
+    ky = -fs/2:fs/ny:fs/2;
+    ky = ky(2:end);  % ky(1) = -kyMax is omitted in fft
+
+
+
 
     % plot the power spectral density
     spatio_freq_mag=abs(spatio_freq).^2/(nx*ny);
