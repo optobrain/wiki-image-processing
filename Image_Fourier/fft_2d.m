@@ -8,6 +8,11 @@ path(path, "../../matlab-lib");
 
 clear;
 
+
+% this part can be referenced from the normalized frequency part from the
+% MATLAB tutorial website, as the frequency is normalized by the wavelength
+% of the input signal.
+
 % Parameters
 
 lam1 = 20;  % characteristic wavelength [m]
@@ -24,6 +29,8 @@ nu1 = 1/lam1  % corresponding spatial frequency [/m]
 % the *spatial* frequency. Here, the frequency domain of FFT is represented by nu, not k.
 
 % Array of space, x
+% nx here represents the number of sample of the signal and divided by fs
+% can lead to the sample position at the time spots
 
 x = (1:nx)/fs;  % sampling interval of x = 1/fs
 

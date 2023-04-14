@@ -74,20 +74,7 @@ function [common_freq, common_ang, ...
 
     % plot the power spectral density
     spatio_freq_mag=abs(spatio_freq).^2/(nx*ny);
-%     wid_rang=(1:wid_img);
-%     len_rang=(1:len_img);
-%     [wid_mat, len_mat]=ndgrid(wid_rang,len_rang);
-%     wid_mat=wid_mat-1; % subtract every element in horizontal direction by 1 
-%     wid_mat=wid_mat/len_img; % divide every element in horizontal direction by the length of the image
-%     len_mat=len_mat-1; % subtract every element in vertical direction by 1
-%     len_mat=len_mat/wid_img; % divide every element in vertical direction by the width of the image
-%     % centralize the frequency scale
-%     wid_mat=wid_mat-0.5;
-%     len_mat=len_mat-0.5;
-%     % calculate the overall frequency
-%     freqs_x=2*pi*wid_mat;
-%     freqs_y=2*pi*len_mat;
-%     freqs=sqrt(freqs_x.^2+freqs_y.^2);
+
     [gkx, gky] = ndgrid(kx, ky);
     k = sqrt(gkx.^2 + gky.^2);
     kSort = k(:);
