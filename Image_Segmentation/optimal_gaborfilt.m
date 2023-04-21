@@ -51,8 +51,8 @@ function [mag_gabor,phase_gabor]=optimal_gaborfilt(image,factor_wav,factor_angle
 
     % angle computation
     % divide the angle from 0 to 180 into several grids
-    optimal_angs=optimal_ang_gen(common_ang,max_freq_ang,min_freq_ang,factor_angle);
-    
+    optimal_angs=optimal_ang_gen(common_ang,max_freq_x,max_freq_y, min_freq_x, min_freq_y,factor_angle);
+
     % conduct gabor filtering
     if size(image,3)~= 1
         gray_img=im2gray(im2single(image));
