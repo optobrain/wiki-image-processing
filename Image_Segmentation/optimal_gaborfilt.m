@@ -26,28 +26,36 @@ function [mag_gabor,phase_gabor]=optimal_gaborfilt(image,factor_wav,factor_angle
     % wavelength computation
     % retrieve necessary parameters for gabor filters
     % retrieve the wavelengths of the gabor filters
-    [common_freq,common_ang,...
-     max_freq,max_freq_ang,...
-     min_freq,min_freq_ang]=img_spatio_freq(image); % retreive the spatial frequency of the image
+    [common_freq,common_ang]=img_spatio_freq(image); % retreive the spatial frequency of the image
     common_wavelength=freq_wave_converter(image,common_freq); % convert the most common frequency to wavelength
-    max_freq_wavelength=freq_wave_converter(image,max_freq); % convert the maximum frequency to wavelength
-    min_freq_wavelength=freq_wave_converter(image,min_freq); % convert the minimum frequency to wavelength
+    % convert the maximum frequency to wavelength
+    fs=1;
+    nx=size(image,2);
+    ny=size(image,1); 
+    max_freq_x=(nx/2-1)*(fs/nx); % x direction
+    max_freq_y=(ny/2-1)*(fs/ny); % y direction
+    max_freq_wavelength_x=freq_wave_converter(image,max_freq_x); 
+    max_freq_wavelength_y=freq_wave_converter(image,max_freq_y); 
+    min_freq_x=(1)*(fs/nx); % x direction
+    min_freq_y=(1)*(fs/ny); % y direction
+    min_freq_wavelength_x=freq_wave_converter(image,min_freq_x); 
+    min_freq_wavelength_y=freq_wave_converter(image,min_freq_y); 
     common_wavelength=sqrt(common_wavelength(1)^2 + ...
                            common_wavelength(2)^2);
-    max_freq_wavelength=sqrt(max_freq_wavelength(1)^2 + ...
-                             max_freq_wavelength(2)^2);
-    min_freq_wavelength=sqrt(min_freq_wavelength(1)^2 + ...
-                             min_freq_wavelength(2)^2);
+    max_freq_wavelength=sqrt(max_freq_wavelength_x^2 + ...
+                             max_freq_wavelength_y^2);
+    min_freq_wavelength=sqrt(min_freq_wavelength_x^2 + ...
+                             min_freq_wavelength_y^2);
     % compute optimal wavelengths
     optimal_waves=optimal_wav_gen(common_wavelength,max_freq_wavelength,min_freq_wavelength,factor_wav);
 
     % angle computation
     % divide the angle from 0 to 180 into several grids
     optimal_angs=optimal_ang_gen(common_ang,max_freq_ang,min_freq_ang,factor_angle);
-
+    
     % conduct gabor filtering
     if size(image,3)~= 1
-        gray_img=rgb2gray(image);
+        gray_img=im2gray(im2single(image));
     else
         gray_img=image;
     end

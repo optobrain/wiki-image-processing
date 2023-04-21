@@ -23,7 +23,7 @@ function wavelength=freq_wave_converter(image,freq)
     wavelength=zeros(num_freq,1);
     for i_freq=1:num_freq
         if freq(i_freq)~=0
-            wavelength(i_freq)=2*pi*(1./freq(i_freq));
+            wavelength(i_freq)=(1./freq(i_freq));
         else
             if i_freq==1
                 wavelength(i_freq)=size(image,2);
