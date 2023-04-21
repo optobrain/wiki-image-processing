@@ -49,6 +49,10 @@ function [common_freq, common_ang]=img_spatio_freq(image)
     % Obtain the Fourier Transform Plot
     figure(1);
     imagesc(abs(spatio_freq));
+    axis image
+    ax = gca;
+    ax.YDir = "normal";
+    ax.DataAspectRatio = [1 1 1];
 
     % Obtain power spectral density information
     psd=(1/((fs*nx)*(fs*ny)))*abs(spatio_freq).^2;
@@ -74,10 +78,10 @@ function [common_freq, common_ang]=img_spatio_freq(image)
         im_fyMax=im_fyMax+ny/2;
     % set the default mode as chucking off along the x direction
     else
-        test_psd=psd(:,nx/2+1:end);
+        test_psd=psd(ny/2+1:end,:);
         [mag_max] = max(test_psd, [], 'all');
         [im_fyMax,im_fxMax]=find(test_psd==mag_max);
-        im_fxMax=im_fxMax+nx/2;
+        im_fyMax=im_fyMax+ny/2;
     end
 
     % find the most common frequency
