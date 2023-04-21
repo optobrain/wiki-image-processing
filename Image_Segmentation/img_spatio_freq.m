@@ -95,6 +95,9 @@ function [common_freq, common_ang]=img_spatio_freq(image)
     wavyMax=1./fyMax;
     % find the corresponding angle
     angMax = atan(fyMax/fxMax);
+    if isnan(angMax)
+        angMax=0;
+    end
     % Obtain Power Spectral Density Plot
     figure(2);
     title("2D Power spectral density");

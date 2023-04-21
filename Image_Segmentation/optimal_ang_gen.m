@@ -65,8 +65,8 @@ function optimal_angs=optimal_ang_gen(common_ang,max_freq_x,max_freq_y, min_freq
         % range
         max_ang=atan(max_freq_y/min_freq_x);
         min_ang=atan(min_freq_y/max_freq_x);
-        factormax=facotr_angle*(max_ang-common_ang)/(max_ang-min_ang);
-        factormin=facotr_angle*(common_ang-min_ang)/(max_ang-min_ang);
+        factormax=factor_angle*(max_ang-common_ang)/(max_ang-min_ang);
+        factormin=factor_angle*(common_ang-min_ang)/(max_ang-min_ang);
         commonTomax=common_ang:(max_ang-common_ang)/(factormax):max_ang;
         commonTomin=min_ang:(common_ang-min_ang)/(factormin):common_ang;
         optimal_angs=[commonTomin commonTomax];

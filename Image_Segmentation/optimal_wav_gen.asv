@@ -69,7 +69,7 @@ function optimal_wav=optimal_wav_gen(common_wavelength,max_freq_wavelength,min_f
         fact_commax=round(fact_commax);
         fact_commin=factor_wav-fact_commax;
         if dist_commin==0
-            dist_commin=1;
+
         end
 
         if fact_commax==0

@@ -62,7 +62,7 @@ function [mag_gabor,phase_gabor]=optimal_gaborfilt(image,factor_wav,factor_angle
     % create gabor filters
     g = gabor(optimal_waves,optimal_angs);
     [mag_gabor,phase_gabor]=imgaborfilt(gray_img,g);
-    montage(mag_gabor,"size",[4 6])
+%     montage(mag_gabor,"size",[4 6])
 
 
 
