@@ -37,9 +37,9 @@ function [common_freq, common_ang]=img_spatio_freq(image)
     spatio_freq=fftshift(fft2(image));
     
     % Obtain the array for frequency in Fourier Transform domain
-    fx=linspace(-fs/2+fs/nx,fs/2,nx); % x direction
-    fy=linspace(-fs/2+fs/ny,fs/2,ny); % y direction
-    
+    fx=(-nx/2:nx/2-1)*(fs/nx); % x direction
+    fy=(-ny/2:ny/2-1)*(fs/ny); % y direction
+
     % Obtain wavenumber array
     kx=2*pi*fx; % x direction 
     ky=2*pi*fy; % y direction
@@ -55,8 +55,8 @@ function [common_freq, common_ang]=img_spatio_freq(image)
     %=============================================
     
     % find the most common frequency
-    fxMax=fx(im_fxMax-1);
-    fyMax=fy(im_fyMax-1);
+    fxMax=fx(im_fxMax);
+    fyMax=fy(im_fyMax);
     % find the most common angular frequency
     kxMax=2*pi*fxMax;
     kyMax=2*pi*fyMax;
@@ -70,7 +70,7 @@ function [common_freq, common_ang]=img_spatio_freq(image)
     title("2D Power spectral density");
     imagesc(fx, fy, psd');
     [~,im]=max(psd); % find out index of the maximum value
-    line(fx(im(1)), fy(im(2)), marker="o", color='c');  % mark the maximum by "o"
+    line(fxMax, fyMax, marker="o", color='c');  % mark the maximum by "o"
     axis image
     ax = gca;
     ax.YDir = "normal";
@@ -80,12 +80,9 @@ function [common_freq, common_ang]=img_spatio_freq(image)
     line([0 0], ax.YLim, color='w');  
     ax.YLabel.String = "\nu_y [/m]";
     ax.XLabel.String = ["\nu_x [/m]", ...
-        sprintf("Max at nux=%.3f, kx=%.2f, lamX=%.1f", fx(im(1)), kx(im(1)), 2*pi/kx(im(1))), ...
-        sprintf("and nuy=%.3f, ky=%.2f, lamY=%.1f", fy(im(2)), ky(im(2)), 2*pi/ky(im(2))), ...
-        sprintf("and ang=%.2f [rad]", atan(ky(im(2))/kx(im(1))))];
-        sgtitle([sprintf("True nux=%.3f, kx=%.2f, lamX=%.1f", fxMax, kxMax, wavxMax), ...
-        sprintf("and nuy=%.3f, ky=%.2f, lamY=%.1f", fyMax, kyMax, wavyMax), ...
-        sprintf("and ang=%.2f [rad]", angMax)]);
+        sprintf("Max at nux=%.3f, kx=%.2f, lamX=%.1f", fxMax, kxMax, 2*pi./kxMax), ...
+        sprintf("and nuy=%.3f, ky=%.2f, lamY=%.1f", fyMax, kyMax, 2*pi./kyMax), ...
+        sprintf("and ang=%.2f [rad]", atan(kyMax./kxMax))];
 
     % check if the final frequency is larger than the base frequency: 2*pi/wid_img (need more clarification)
     thres_x=2*pi/nx;
