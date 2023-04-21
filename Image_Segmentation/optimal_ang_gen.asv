@@ -17,11 +17,19 @@ function optimal_angs=optimal_ang_gen(common_ang,max_freq_x,max_freq_y, min_freq
     % insert input parser for organizing the required and optional input
     p=inputParser;
     checkarray = @(x) ~isempty(x);
-    checkinteger = @(x) isfinite(x) && x == floor(x);
+    checkinteger = @(x) isfinite(x);
     addRequired(p,"common_ang",checkarray);
+    addRequired(p,"max_freq_x",checkinteger);
+    addRequired(p,"max_freq_y",checkinteger);
+    addRequired(p,"min_freq_x",checkinteger);
+    addRequired(p,"min_freq_y",checkinteger);
     addRequired(p,"factor_angle",checkinteger);
-    parse(p,common_ang,factor_angle);
+    parse(p,common_ang,max_freq_x,max_freq_y, min_freq_x, min_freq_y,factor_angle);
     common_ang=p.Results.common_ang;
+    max_freq_x=p.Results.max_freq_x;
+    max_freq_y=p.Results.max_freq_y;
+    min_freq_x=p.Results.min_freq_x;
+    min_freq_y=p.Results.min_freq_y;
     factor_angle=p.Results.factor_angle;
 
     % check the number of common angle
@@ -48,7 +56,7 @@ function optimal_angs=optimal_ang_gen(common_ang,max_freq_x,max_freq_y, min_freq
             % create wavelength range
             ang_rang=first:grid_size:second;
             % store it into optimal wave array
-            optimal_ang=cat(1,optimal_ang,ang_rang);
+            optimal_angs=cat(1,optimal_ang,ang_rang);
         end
     % if there is only one common angle conduct one way of computing
     % wavelength ranges
@@ -57,8 +65,9 @@ function optimal_angs=optimal_ang_gen(common_ang,max_freq_x,max_freq_y, min_freq
         % range
         max_ang=atan(max_freq_y/min_freq_x);
         min_ang=atan(min_freq_y/max_freq_x);
+        factormax=facotr_angle*(max_ang-common_ang)/(max)
         commonTomax=common_ang:(max_ang-common_ang)/(factor_angle/2):max_ang;
-        commonTomin=min_ang:(common_ang-min_ang)/(factor_angle/2):common_ang:
-        optimal_ang=[commonTomin commonTomax];
+        commonTomin=min_ang:(common_ang-min_ang)/(factor_angle/2):common_ang;
+        optimal_angs=[commonTomin commonTomax];
     end
 end
