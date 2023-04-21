@@ -58,16 +58,16 @@ function [common_freq, common_ang]=img_spatio_freq(image)
     % check if the frequency is in only one direction
     % if there's only x direction frequency exists, chuck off the matrix in
     % x direction
-    testfx=im_fxMax-nx/2-1;
-    testfy=im_fyMax-ny/2-1;
-    if ~all(testfy(:),'all')
+    if ~all(im_fyMax-1>0)
         test_psd=psd(:,nx/2+1:end);
         [mag_max] = max(test_psd, [], 'all');
         [im_fyMax,im_fxMax]=find(test_psd==mag_max);
         im_fxMax=im_fxMax+nx/2;
     % if there's only y direction frequency exists, chuck off the matrix in
     % y direction
-    elseif ~all(testfx(:),'all')
+    testfx=im_fxMax-1;
+    testfy=im_fyMax-1;
+    elseif ~all(testfx(:)>0)
         test_psd=psd(ny/2+1:end,:);
         [mag_max] = max(test_psd, [], 'all');
         [im_fyMax,im_fxMax]=find(test_psd==mag_max);
