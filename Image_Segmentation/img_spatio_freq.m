@@ -5,7 +5,8 @@
 % This function is created to compute an estimation of the spatio
 % frequency of the tested image.
 % Function Arguments:
-% image: tested image (data size: (width image, length image, channel image)
+% image: tested image (data size: (width image, length image, channel
+% image))
 
 function [common_freq, common_ang]=img_spatio_freq(image)
     % check out if the input is empty
@@ -56,6 +57,7 @@ function [common_freq, common_ang]=img_spatio_freq(image)
 
     % Obtain power spectral density information
     psd=(1/((fs*nx)*(fs*ny)))*abs(spatio_freq).^2;
+    
     % Obtain the index of the maximum magnitude
     [mag_max] = max(psd, [], 'all');
     [im_fyMax,im_fxMax]=find(psd==mag_max);
