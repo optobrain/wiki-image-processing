@@ -8,7 +8,7 @@
 % image: tested image (data size: (width image, length image, channel
 % image))
 
-function [common_freq, common_ang]=img_spatio_freq(image)
+function [common_freq, common_wav,common_ang]=img_spatio_freq(image)
     % check out if the input is empty
     % insert input parser for organizing the required and optional input
     p=inputParser;
@@ -38,25 +38,44 @@ function [common_freq, common_ang]=img_spatio_freq(image)
     % conduct fast Fourier shift to centralize the component to the center
     % part of the matrix
     spatio_freq=fftshift(fft2(image));
-    
+    % compute the magnitude of spatial frequency plot generated from spatial frequency
+    mag_spatio_freq=abs(spatio_freq);
+
     % Obtain the array for frequency in Fourier Transform domain
     fx=(-nx/2:nx/2-1)*(fs/nx); % x direction
     fy=(-ny/2:ny/2-1)*(fs/ny); % y direction
+    % Obtain spatial frequency matrix
+    [gfy,gfx] = ndgrid(fy,fx);
+    spatial_freq=sqrt(gfx.^2+gfy.^2);
 
     % Obtain wavenumber array
     kx=2*pi*fx; % x direction 
     ky=2*pi*fy; % y direction
 
-    % Obtain the Fourier Transform Plot
+    % Obtain the distribution of the magnitude plot for Fourier Transform
+    % sort the magnitude matrix 
+    [sorted_spatio_freq,is]=sort(spatial_freq(:));
+    sorted_mag=mag_spatio_freq(:);
+    sorted_mag=sorted_mag(is);
     figure(1);
-    imagesc(abs(spatio_freq));
+    plot(sorted_spatio_freq,sorted_mag)
+    xlabel('\Spatio Frequency [\Hz]')
+    ylabel('\Magnitude of Spatial Frequency')
+    
+    % compute the threshold of plot display
+    thre_pixel=0.1*max(mag_spatio_freq, [], 'all');
+    % Obtain the Fourier Transform Plot
+    figure(2);
+    imagesc(fx,fy,mag_spatio_freq);
+    set(gca,'xdir','normal')
     axis image
     ax = gca;
+    set(gca,'clim',[0 thre_pixel]);
     ax.YDir = "normal";
     ax.DataAspectRatio = [1 1 1];
 
     % Obtain power spectral density information
-    psd=(1/((fs*nx)*(fs*ny)))*abs(spatio_freq).^2;
+    psd=(1/((fs*nx)*(fs*ny))).*abs(spatio_freq).^2;
     
     % Obtain the index of the maximum magnitude
     [mag_max] = max(psd, [], 'all');
@@ -66,6 +85,8 @@ function [common_freq, common_ang]=img_spatio_freq(image)
     % x direction
     testfx=im_fxMax-nx/2-1;
     testfy=im_fyMax-ny/2-1;
+    % if there's only x direction frequency exists, chuck off the matrix in
+    % x direction
     if ~all(testfy(:),'all')
         test_psd=psd(:,nx/2+1:end);
         [mag_max] = max(test_psd, [], 'all');
@@ -95,13 +116,17 @@ function [common_freq, common_ang]=img_spatio_freq(image)
     % find the most common wavelength 
     wavxMax=1./fxMax;
     wavyMax=1./fyMax;
+    % compute the most common wavelength 
+    wavMax=sqrt(wavxMax.^2+wavyMax.^2);
+
     % find the corresponding angle
     angMax = atan(fyMax/fxMax);
     if isnan(angMax)
         angMax=0;
     end
+
     % Obtain Power Spectral Density Plot
-    figure(2);
+    figure(3);
     title("2D Power spectral density");
     imagesc(fx, fy, psd');
     [~,im]=max(psd); % find out index of the maximum value
@@ -133,5 +158,6 @@ function [common_freq, common_ang]=img_spatio_freq(image)
     % return the frequencies
     common_freq=[fxMax fyMax];
     common_ang=angMax;
+    common_wav=wavMax;
 
 end
