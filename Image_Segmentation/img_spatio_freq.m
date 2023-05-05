@@ -8,7 +8,7 @@
 % image: tested image (data size: (width image, length image, channel
 % image))
 
-function [common_freq, common_wav,common_ang, pks_freq, pks_wav, pks_ang]=img_spatio_freq(image)
+function [common_freq, common_wav,common_ang, pks_freq, pks_wav, pks_ang]=img_spatio_freq(image,factor_wav)
     % check out if the input is empty
     % insert input parser for organizing the required and optional input
     p=inputParser;
@@ -132,17 +132,18 @@ function [common_freq, common_wav,common_ang, pks_freq, pks_wav, pks_ang]=img_sp
     [sort_inter_pks, pks_ind]=sort(inter_pks,'descend'); % sort the peak values in descending order
     columnTop=column(pks_ind);
     rowTop=row(pks_ind);
-    column=columnTop(1:10);
-    row=rowTop(1:10);
+    column=columnTop(1:min(length(columnTop),factor_wav-length(wavMax)));
+    row=rowTop(1:min(length(rowTop),factor_wav-length(wavMax)));
     % calculate the correpsonding spatial frequencies
     fx_pks=fx(row);
     fy_pks=fy(column);
-    % calculate peak angle
-    angPks=atan(fy_pks/fx_pks);
-    % find the most common wavelength 
+    % find the peak wavelength 
     wavxPks=1./fx_pks;
     wavyPks=1./fy_pks;
     wavPks=sqrt(wavxPks.^2+wavyPks.^2);
+    % calculate peak angle
+    angPks=atan(fy_pks/fx_pks);
+    angPks=angPks(1:min(length(angPks),factor_ang-length(angMax)));
 
     % Obtain Power Spectral Density Plot
     figure(2);

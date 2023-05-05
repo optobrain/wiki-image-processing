@@ -16,7 +16,7 @@
 % optimal_gaborfilt.m function 
 % (data size: single integer)
 
-function optimal_wav=optimal_wav_gen(common_wavelength,max_freq_wavelength,min_freq_wavelength,factor_wav)
+function optimal_wav=optimal_wav_gen(common_wavelength,peaks_wavelength,factor_wav)
     % check out if the input is empty
     % insert input parser for organizing the required and optional input
     p=inputParser;

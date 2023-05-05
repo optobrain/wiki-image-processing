@@ -26,13 +26,17 @@ function [mag_gabor,phase_gabor]=optimal_gaborfilt(image,factor_wav,factor_angle
     % wavelength computation
     % retrieve necessary parameters for gabor filters
     % retrieve the wavelengths of the gabor filters
-    [common_freq, common_wav,common_ang, pks_freq, pks_wav, pks_ang]=img_spatio_freq(image); % retreive the spatial frequency of the image    
+    [common_freq, common_wav,common_ang, pks_freq, pks_wav, pks_ang]=img_spatio_freq(image,factor_wav); % retreive the spatial frequency of the image    
     % convert the maximum frequency to wavelength
     fs=1;
     nx=size(image,2);
     ny=size(image,1); 
     max_freq_x=(nx/2-1)*(fs/nx); % x direction
     max_freq_y=(ny/2-1)*(fs/ny); % y direction
+    % generate wavelength range
+    optimal_waves=optimal_wav_gen(common_wav,pks_wav,factor_wav);
+
+
     max_freq_wavelength_x=freq_wave_converter(image,max_freq_x); 
     max_freq_wavelength_y=freq_wave_converter(image,max_freq_y); 
     min_freq_x=(1)*(fs/nx); % x direction
