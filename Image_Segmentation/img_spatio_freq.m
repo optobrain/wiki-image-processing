@@ -8,7 +8,7 @@
 % image: tested image (data size: (width image, length image, channel
 % image))
 
-function [common_freq, common_wav,common_ang, pks_freq, pks_wav, pks_ang]=img_spatio_freq(image,factor_wav)
+function [common_freq, common_wav,common_ang, pks_freq, pks_wav, pks_ang]=img_spatio_freq(image,factor_wav,factor_ang)
     % check out if the input is empty
     % insert input parser for organizing the required and optional input
     p=inputParser;
@@ -58,15 +58,20 @@ function [common_freq, common_wav,common_ang, pks_freq, pks_wav, pks_ang]=img_sp
     kx=2*pi*fx; % x direction 
     ky=2*pi*fy; % y direction
     
-    % compute the threshold of plot display
-    thre_pixel=0.1*max(mag_spatio_freq, [], 'all');
     % Obtain the Fourier Transform Plot
-    figure(1);
-    imagesc(fx,fy,mag_spatio_freq);
-    set(gca,'xdir','normal')
+    % in your case, we should NOT have the transpose (because of below)
+    figure;   colormap(jet)
+    psd_dB = 10*log10(mag_spatio_freq/max(mag_spatio_freq(:)));
+    imagesc(fx,fy,psd_dB)  % imagesc() assumes mag_spatio_freq(ky,kx) but receives imagesc(kx,ky,mag..(ky,kx))
+    % that's why, I usually set 2D array to be f(x,y), and then use
+    % imagesc(x,y,f')
+    cb = colorbar;
+    cb.Label.String = "Power (dB)";
+    axis image;
+    set(gca,'ydir','normal')
     axis image
     ax = gca;
-    set(gca,'clim',[0 thre_pixel]);
+    set(gca,'clim',[-50 0])
     ax.YDir = "normal";
     ax.DataAspectRatio = [1 1 1];
 
@@ -127,28 +132,33 @@ function [common_freq, common_wav,common_ang, pks_freq, pks_wav, pks_ang]=img_sp
     [pks_y,locs_y]=findpeaks(double(mag_spatio_freq_t(:))); % find peaks along y direction
     mag_size=size(mag_spatio_freq);
     ind=intersect(locs_x,locs_y); % get the peaks that are present in both x and y directions
-    [column,row]=ind2sub(mag_size,ind); % get the correpsonding 2D coordinates
-    inter_pks=mag_spatio_freq(column,row);
+    [y_coords,x_coords]=ind2sub(mag_size,ind); % get the correpsonding 2D coordinates
+    inter_pks=mag_spatio_freq(sub2ind(size(mag_spatio_freq),y_coords,x_coords));
     [sort_inter_pks, pks_ind]=sort(inter_pks,'descend'); % sort the peak values in descending order
-    columnTop=column(pks_ind);
-    rowTop=row(pks_ind);
-    column=columnTop(1:min(length(columnTop),factor_wav-length(wavMax)));
-    row=rowTop(1:min(length(rowTop),factor_wav-length(wavMax)));
+    yTop=y_coords(pks_ind);
+    xTop=x_coords(pks_ind);
+    ys=yTop(1:min(length(yTop),factor_wav-length(wavMax)));
+    xs=xTop(1:min(length(xTop),factor_wav-length(wavMax)));
     % calculate the correpsonding spatial frequencies
-    fx_pks=fx(row);
-    fy_pks=fy(column);
+    fx_pks=fx(xs);
+    fy_pks=fy(ys);
     % find the peak wavelength 
     wavxPks=1./fx_pks;
     wavyPks=1./fy_pks;
     wavPks=sqrt(wavxPks.^2+wavyPks.^2);
     % calculate peak angle
     angPks=atan(fy_pks/fx_pks);
-    angPks=angPks(1:min(length(angPks),factor_ang-length(angMax)));
+    angPks=angPks(1:min(length(angPks),factor_ang-length(angPks)));
 
     % Obtain Power Spectral Density Plot
+    figure;
+    imagesc(fx,fy,psd)
+    line(fxMax, fyMax, marker="o", color='c');  % mark the maximum by "o"
+
+
     figure(2);
     title("2D Power spectral density");
-    imagesc(fx, fy, psd');
+    imagesc(fx, fy, psd);  % psd(fy,fx) so we don't need transpose
     [~,im]=max(psd); % find out index of the maximum value
     line(fxMax, fyMax, marker="o", color='c');  % mark the maximum by "o"
     line(fx_pks,fy_pks,marker="+", color='c'); % mark out other peaks by "+"
