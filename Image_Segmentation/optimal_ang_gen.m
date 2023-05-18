@@ -12,24 +12,18 @@
 % optimal_gaborfilt.m function 
 % (data size: single integer)
 
-function optimal_angs=optimal_ang_gen(common_ang,max_freq_x,max_freq_y, min_freq_x, min_freq_y, factor_angle)
+function optimal_angs=optimal_ang_gen(common_ang,peaks_ang, factor_angle)
     % check out if the input is empty
     % insert input parser for organizing the required and optional input
     p=inputParser;
     checkarray = @(x) ~isempty(x);
     checkinteger = @(x) isfinite(x);
     addRequired(p,"common_ang",checkarray);
-    addRequired(p,"max_freq_x",checkinteger);
-    addRequired(p,"max_freq_y",checkinteger);
-    addRequired(p,"min_freq_x",checkinteger);
-    addRequired(p,"min_freq_y",checkinteger);
+    addRequired(p,"peaks_ang",checkinteger);
     addRequired(p,"factor_angle",checkinteger);
-    parse(p,common_ang,max_freq_x,max_freq_y, min_freq_x, min_freq_y,factor_angle);
+    parse(p,common_ang,peaks_ang,factor_angle);
     common_ang=p.Results.common_ang;
-    max_freq_x=p.Results.max_freq_x;
-    max_freq_y=p.Results.max_freq_y;
-    min_freq_x=p.Results.min_freq_x;
-    min_freq_y=p.Results.min_freq_y;
+    peaks_ang=p.Results.peaks_ang;
     factor_angle=p.Results.factor_angle;
 
     % check the number of common angle
@@ -61,14 +55,22 @@ function optimal_angs=optimal_ang_gen(common_ang,max_freq_x,max_freq_y, min_freq
     % if there is only one common angle conduct one way of computing
     % wavelength ranges
     else
-        % create variable for storing wave factors for each wavelength
-        % range
-        max_ang=atan(max_freq_y/min_freq_x);
-        min_ang=atan(min_freq_y/max_freq_x);
-        factormax=factor_angle*(max_ang-common_ang)/(max_ang-min_ang);
-        factormin=factor_angle*(common_ang-min_ang)/(max_ang-min_ang);
-        commonTomax=common_ang:(max_ang-common_ang)/(factormax):max_ang;
-        commonTomin=min_ang:(common_ang-min_ang)/(factormin):common_ang;
-        optimal_angs=[commonTomin commonTomax];
+        % find out how many feature wavelengths inside the feature set
+        feat_angs=cat(2,common_ang,peaks_ang);
+        feat_angs=feat_angs(~(isnan(feat_angs)|isinf(feat_angs)));
+        % sort all wavelength from smallest to highest
+        feat_angs=sort(feat_angs);
+        % create a imaginary x array
+        x=linspace(1,length(feat_angs),length(feat_angs));
+        NewX=linspace(1,length(feat_angs),length(feat_angs)+factor_angle);
+        % using linear interpolation to generate new point
+        new_angs=interp1(x,feat_angs,NewX,'linear');
+        new_angs=new_angs(~ismember(new_angs,common_ang));
+        new_angs=new_angs(~ismember(new_angs,peaks_ang));
+
+        % find out the element that is cloest to common wavelength
+        [~,minInd]=mink(abs(new_angs-common_ang),factor_angle);
+        % concatenate it back to feat_wavs
+        optimal_angs=new_angs(minInd);
     end
 end

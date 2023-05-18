@@ -148,8 +148,8 @@ function [common_freq, common_wav,common_ang, pks_freq, pks_wav, pks_ang, add_wa
     wavyPks=1./fy_pks;
     wavPks=sqrt(wavxPks.^2+wavyPks.^2);
     % calculate peak angle
-    angPks=atan2(fy_pks,fx_pks);
-    angPks=angPks(1:min(length(angPks),factor_ang-length(angMax)));
+    angPks=atan(fy_pks/fx_pks);
+    angPks=angPks(1:min(length(angPks),factor_ang-length(angPks)));
 
     % check how many frequencies and angles in current frequency and angles
     wav_feat=cat(2,wavMax,wavPks);
@@ -175,12 +175,18 @@ function [common_freq, common_wav,common_ang, pks_freq, pks_wav, pks_ang, add_wa
         add_ang=optimal_ang_gen(angMax,angPks, left_ang);
     end
 
-    figure;
+%     % Obtain Power Spectral Density Plot
+%     figure;
+%     imagesc(fx,fy,psd)
+%     line(fxMax, fyMax, marker="o", color='c');  % mark the maximum by "o"
+
+    figure(2);
     title("2D Power spectral density");
     imagesc(fx, fy, psd_dB);  % psd(fy,fx) so we don't need transpose
     [~,im]=max(psd_dB); % find out index of the maximum value
     line(fxMax, fyMax, marker="o", color='w', linestyle='none');  % mark the maximum by "o"
     line(fx_pks,fy_pks,marker="o", color='w', linestyle='none'); % mark out other peaks by "+"
+    
     axis image
     ax = gca;
     ax.YDir = "normal";

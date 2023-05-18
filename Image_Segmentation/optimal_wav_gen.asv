@@ -23,7 +23,7 @@ function optimal_wav=optimal_wav_gen(common_wavelength,peaks_wavelength,factor_w
     checkarray = @(x) ~isempty(x);
     checkinteger = @(x) isfinite(x) && x == floor(x);
     addRequired(p,"common_wavelength",checkarray);
-    addOptional(p,"peaks_wavelength",[]);
+    addRequired(p,"peaks_wavelength",checkarray);
     addRequired(p,"factor_wav",checkinteger);
     parse(p,common_wavelength,peaks_wavelength,factor_wav);
     common_wavelength=p.Results.common_wavelength;
@@ -33,22 +33,41 @@ function optimal_wav=optimal_wav_gen(common_wavelength,peaks_wavelength,factor_w
     % check how many common frequencies 
     % if there are multiple common frequencies conduct one way of computing
     % wavelength ranges
-    if numel(common_wavelength)~=1     
-        % calculate the number of common wavelength
-        num_comm=numel(common_wavelength);
+    if numel(common_wavelength)~=1
+        % figure out the number of common wavelength
+        num_commonwave=numel(common_wavelength);
+        % create variable for storing wave factors for each wavelength
+        % range
+        optimal_wav=[];        
         % calculate the mean wavelength of the most common wavelength
-        mean_com_wav=min(common_wavelength,[],"all");
-        % get the log base additional wavelength 
-        add_wav = mean_com_wav.^(0:factor_wav);
-        % output additional wavelength
-        optimal_wav=cat(2,common_wavelength,peaks_wavelength,add_wav);
+        mean_com_wav=min(common_wavelength,"all");
+        % get the log base wavelength 
+        optimal_wav = mean_com_wav.^(0:factor_wav);
 
+        
+
+        % calculate new factor for each wave range
+        for i_commonwave=1:num_commonwave-1
+            % pick up the current and next wavelength values
+            first=common_wavelength(i_commonwave);
+            second=common_wavelength(i_commonwave);
+            % calculate the range between these two
+            range=second-first;
+            % create grids
+            new_factor=factor_wav/(num_commonwave-1);
+            grid_size=range/new_factor;
+            % create wavelength range
+            wav_rang=first:grid_size:second;
+            % store it into optimal wave array
+            optimal_wav=cat(1,optimal_wav,wav_rang);
+        end
     % if there is only one common frequencies conduct one way of computing
     % wavelength ranges
     else 
         % find out how many feature wavelengths inside the feature set
         feat_wavs=cat(2,common_wavelength,peaks_wavelength);
         feat_wavs=feat_wavs(~(isnan(feat_wavs)|isinf(feat_wavs)));
+
         % sort all wavelength from smallest to highest
         feat_wavs=sort(feat_wavs);
         % create a imaginary x array
