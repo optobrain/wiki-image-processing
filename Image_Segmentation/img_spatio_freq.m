@@ -154,8 +154,8 @@ function [common_freq, common_wav,common_ang, pks_freq, pks_wav, pks_ang, add_wa
     % check how many frequencies and angles in current frequency and angles
     wav_feat=cat(2,wavMax,wavPks);
     ang_feat=cat(2,angMax,angPks);
-    wav_feat=wav_feat(~(isnan(wav_feat)|isinf(wav_feat)));
-    ang_feat=ang_feat(~(isnan(ang_feat)|isinf(ang_feat)));
+    wav_feat=wav_feat(~(isnan(wav_feat)));
+    ang_feat=ang_feat(~(isnan(ang_feat)));
     wav_feat=unique(wav_feat);
     ang_feat=unique(ang_feat);
     num_wav=length(wav_feat);
